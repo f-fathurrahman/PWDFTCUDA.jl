@@ -1,7 +1,6 @@
-using CuArrays
-using CUDAnative
+using CUDA
 
-include("cu_XC_functionals_internal.jl")
+include("../src/cu_XC_functionals_internal.jl")
 
 function kernel_LDA_nospin!( Rhoe )
     idx = ( blockIdx().x - 1 )*blockDim().x + threadIdx().x
@@ -9,7 +8,7 @@ function kernel_LDA_nospin!( Rhoe )
     if idx <= N
         ex, vx = cu_XC_x_slater( Rhoe[idx] )
         ec, vc = cu_XC_c_pw( Rhoe[idx] )
-        ec, vc = cu_XC_c_vwn( Rhoe[idx] )
+        #ec, vc = cu_XC_c_vwn( Rhoe[idx] )
     end
     return
 end
@@ -50,21 +49,21 @@ function main()
     
     Npoints = 1000
     
-    Rhoe = abs.( CuArrays.rand(Float64, Npoints) )
-    zeta = CuArrays.rand(Float64, Npoints)
+    Rhoe = abs.( CUDA.rand(Float64, Npoints) )
+    zeta = CUDA.rand(Float64, Npoints)
 
-    gRhoe2 = abs.( CuArrays.rand(Float64, Npoints) )
+    gRhoe2 = abs.( CUDA.rand(Float64, Npoints) )
 
     Nthreads = 256
     Nblocks = ceil(Int64, Npoints/Nthreads)
 
-    #@cuda threads=Nthreads blocks=Nblocks kernel_LDA_nospin!( Rhoe )
+    @cuda threads=Nthreads blocks=Nblocks kernel_LDA_nospin!( Rhoe )
     
     #@cuda threads=Nthreads blocks=Nblocks kernel_LDA_spin!( Rhoe, zeta )
 
     #@cuda threads=Nthreads blocks=Nblocks kernel_GGA_nospin!( Rhoe, gRhoe2 )
 
-    @cuda threads=Nthreads blocks=Nblocks kernel_GGA_spin!( Rhoe, zeta, gRhoe2 )
+    #@cuda threads=Nthreads blocks=Nblocks kernel_GGA_spin!( Rhoe, zeta, gRhoe2 )
 
     println("Pass here")
 end
