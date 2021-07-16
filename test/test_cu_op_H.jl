@@ -3,7 +3,7 @@ using Random
 using Printf
 
 using PWDFT
-using PWDFT_cuda
+using PWDFTCUDA
 
 const DIR_PWDFT = joinpath(dirname(pathof(PWDFT)),"..")
 const DIR_PSP = joinpath(DIR_PWDFT, "pseudopotentials", "pade_gth")

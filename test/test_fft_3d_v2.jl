@@ -1,6 +1,6 @@
 using BenchmarkTools
 
-include("PWDFT_cuda.jl")
+include("PWDFTCUDA.jl")
 
 function main_CPU(; ecutwfc=15.0)
     pw = PWGrid(ecutwfc, gen_lattice_sc(20.0))

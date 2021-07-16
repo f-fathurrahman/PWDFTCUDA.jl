@@ -3,13 +3,13 @@ using Random
 
 using CUDA
 using PWDFT
-using PWDFT_cuda
+using PWDFTCUDA
 
 const DIR_PWDFT = joinpath(dirname(pathof(PWDFT)),"..")
 const DIR_PSP = joinpath(DIR_PWDFT, "pseudopotentials", "pade_gth")
 const DIR_STRUCTURES = joinpath(DIR_PWDFT, "structures")
 
-include("../../get_default_psp.jl")
+include("get_default_psp.jl")
 
 function main_CPU(molname)
 
@@ -62,5 +62,4 @@ function main()
     main_GPU(molname)
 end
 
-main()
-
+#main()

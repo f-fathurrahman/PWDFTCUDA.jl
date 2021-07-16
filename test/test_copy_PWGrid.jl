@@ -1,6 +1,6 @@
 using CuArrays
 using PWDFT
-using PWDFT_cuda
+using PWDFTCUDA
 
 function main()
 

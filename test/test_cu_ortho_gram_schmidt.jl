@@ -4,7 +4,7 @@ using Printf
 using LinearAlgebra
 
 using PWDFT
-using PWDFT_cuda
+using PWDFTCUDA
 
 function main()
 

@@ -1,7 +1,7 @@
 using Test
 
 using PWDFT
-using PWDFT_cuda
+using PWDFTCUDA
 
 function main()
     LatVecs = gen_lattice_sc(10.0)

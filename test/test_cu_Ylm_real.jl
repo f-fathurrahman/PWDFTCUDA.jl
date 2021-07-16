@@ -1,4 +1,4 @@
-include("PWDFT_cuda.jl")
+include("PWDFTCUDA.jl")
 include("cu_Ylm_real.jl")
 
 function kernel_call_Ylm_real( l, m, R1, R2, R3, vout )

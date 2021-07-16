@@ -1,4 +1,4 @@
-module PWDFT_cuda
+module PWDFTCUDA
 
 using Printf
 using FFTW

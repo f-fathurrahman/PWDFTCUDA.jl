@@ -1,4 +1,4 @@
-include("PWDFT_cuda.jl")
+include("PWDFTCUDA.jl")
 include("kernels_PsPot_GTH.jl")
 
 function kernel_call_eval_proj_G( rrl, l, iproj, CellVolume, vin, vout )

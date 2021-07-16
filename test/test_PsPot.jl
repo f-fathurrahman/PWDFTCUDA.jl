@@ -1,1 +1,1 @@
-include("PWDFT_cuda.jl")
+include("PWDFTCUDA.jl")
