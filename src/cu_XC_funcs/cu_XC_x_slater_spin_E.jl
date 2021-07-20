@@ -5,10 +5,10 @@ function cu_XC_x_slater_spin_E( rho, zeta )
     third = 1.0/3.0
     p43 = 4.0/3.0
 
-    rho13 = CUDA.pow( (1.0 + zeta)*rho, third )
+    rho13 = ((1.0 + zeta)*rho)^third
     exup = f * alpha * rho13
     
-    rho13 = CUDA.pow( (1.0 - zeta)*rho, third )
+    rho13 = ((1.0 - zeta)*rho)^third
     exdw = f * alpha * rho13
 
     ex = 0.5 * ( (1.0 + zeta) * exup + (1.0 - zeta) * exdw)

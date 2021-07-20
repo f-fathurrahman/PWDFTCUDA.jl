@@ -8,14 +8,14 @@ function cu_XC_c_pbe_E( rho, grho )
     xkf = 1.919158292677513
     xks = 1.128379167095513
 
-    rs = pi34/CUDA.pow(rho, third)
+    rs = pi34/rho^third
     ec = cu_XC_c_pw_E( rho )
     
     kf = xkf/rs
-    ks = xks * CUDA.sqrt(kf)
-    t = CUDA.sqrt(grho) / (2.0 * ks * rho)
+    ks = xks * sqrt(kf)
+    t = sqrt(grho) / (2.0 * ks * rho)
     
-    expe = CUDA.exp(-ec/ga)
+    expe = exp(-ec/ga)
     af = be / ga * (1.0 / (expe - 1.0) )  
   
     y = af * t * t
@@ -25,7 +25,7 @@ function cu_XC_c_pbe_E( rho, grho )
     qy = y * y * (2.0 + y) / (1.0 + y + y * y)^2
   
     s1 = 1.0 + be / ga * t * t * xy
-    h0 = ga * CUDA.log(s1)
+    h0 = ga * log(s1)
   
     sc = rho * h0
 

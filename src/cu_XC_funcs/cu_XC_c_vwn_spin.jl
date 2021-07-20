@@ -2,7 +2,7 @@ function cu_XC_c_vwn_spin( Rhoe, zeta )
 
     third = 1.0/3.0
     pi34 = 0.6203504908994  # pi34=(3/4pi)^(1/3)
-    rs = pi34/CUDA.pow(Rhoe, third)
+    rs = pi34/Rhoe^third
 
     A      = ( 0.0310907, 0.01554535, -0.01688686394039 )
     x0     = ( -0.10498, -0.32500, -0.0047584 )
@@ -13,17 +13,17 @@ function cu_XC_c_vwn_spin( Rhoe, zeta )
     fx0    = ( 12.5549141492, 15.8687885, 12.99914055888256 )
     bx0fx0 = ( -0.03116760867894, -0.14460061018521, -0.00041403379428 )
 
-    cfz = CUDA.pow(2.0, 4.0/3.0) - 2.0
+    cfz = 2.0^(4.0/3.0) - 2.0
     cfz1 = 1.0 / cfz
     cfz2 = 4.0/3.0 * cfz1
     iddfz0 = 9.0 / 8.0 *cfz
-    sqrtrs = CUDA.sqrt(rs)
+    sqrtrs = sqrt(rs)
     zeta3 = zeta*zeta*zeta
     zeta4 = zeta3*zeta
     trup = 1.0 + zeta
     trdw = 1.0 - zeta
-    trup13 = CUDA.pow( trup, 1.0/3.0 )
-    trdw13 = CUDA.pow( trdw, 1.0/3.0 )
+    trup13 = trup^third
+    trdw13 = trdw^third
     fz = cfz1 * (trup13*trup + trdw13*trdw - 2.0)         # f(zeta)
     dfz = cfz2 * (trup13 - trdw13)     # d f / d zeta
 
@@ -53,11 +53,11 @@ function cu_padefit(x, i, x0, Q, b, c, A, tbQ, bx0fx0)
     sqx = x * x
     xx0 = x - x0[i]
     Qtxb = Q[i] / (2.0*x + b[i])
-    atg = CUDA.atan(Qtxb)
+    atg = atan(Qtxb)
     fx = sqx + b[i]*x + c[i]
 
-    fit = A[i] * (  CUDA.log(sqx/fx) + tbQ[i]*atg - 
-            bx0fx0[i] * ( CUDA.log(xx0*xx0/fx) + (tbQ[i] + 4.0*x0[i]/Q[i]) * atg )  )
+    fit = A[i] * (  log(sqx/fx) + tbQ[i]*atg - 
+            bx0fx0[i] * ( log(xx0*xx0/fx) + (tbQ[i] + 4.0*x0[i]/Q[i]) * atg )  )
 
     txb = 2.0*x + b[i]
     txbfx = txb / fx

@@ -2,7 +2,7 @@ function cu_XC_c_vwn_E( Rhoe )
 
     third = 1.0/3.0
     pi34 = 0.6203504908994  # pi34=(3/4pi)^(1/3)
-    rs = pi34/Rhoe, third
+    rs = pi34/Rhoe^third
 
     a = 0.0310907
     b = 3.72744

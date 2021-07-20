@@ -8,8 +8,8 @@ function cu_XC_x_pbe_E( rho, grho )
     c2 = 3.093667726280136
     c5 = 4.0*third
 
-    agrho = CUDA.sqrt(grho)
-    kf = c2 * CUDA.pow(rho, third)
+    agrho = sqrt(grho)
+    kf = c2 * rho^third
     dsg = 0.5/kf
     s1 = agrho*dsg / rho
     s2 = s1 * s1
