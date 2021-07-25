@@ -59,11 +59,11 @@ function main()
 
     @cuda threads=Nthreads blocks=Nblocks kernel_LDA_nospin!( Rhoe )
     
-    #@cuda threads=Nthreads blocks=Nblocks kernel_LDA_spin!( Rhoe, zeta )
+    @cuda threads=Nthreads blocks=Nblocks kernel_LDA_spin!( Rhoe, zeta )
 
-    #@cuda threads=Nthreads blocks=Nblocks kernel_GGA_nospin!( Rhoe, gRhoe2 )
+    @cuda threads=Nthreads blocks=Nblocks kernel_GGA_nospin!( Rhoe, gRhoe2 )
 
-    #@cuda threads=Nthreads blocks=Nblocks kernel_GGA_spin!( Rhoe, zeta, gRhoe2 )
+    @cuda threads=Nthreads blocks=Nblocks kernel_GGA_spin!( Rhoe, zeta, gRhoe2 )
 
     println("Pass here")
 end

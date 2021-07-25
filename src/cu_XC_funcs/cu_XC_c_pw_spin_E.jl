@@ -2,8 +2,9 @@ function cu_XC_c_pw_spin_E( Rhoe, zeta )
 
     third = 1.0/3.0
     pi34 = 0.6203504908994  # pi34=(3/4pi)^(1/3)
-    rs = pi34/CUDA.pow(Rhoe, third)
+    rs = pi34/Rhoe^third
 
+    # J.P. Perdew and Y. Wang, PRB 45, 13244 (1992)
     # xc parameters, unpolarised
     a = 0.031091
     a1 = 0.21370
@@ -52,28 +53,26 @@ function cu_XC_c_pw_spin_E( Rhoe, zeta )
     zeta3 = zeta2 * zeta
     zeta4 = zeta3 * zeta
   
-    rs12 = CUDA.sqrt(rs)
+    rs12 = sqrt(rs)
     rs32 = rs * rs12
-    rs2 = CUDA.pow(rs, 2)
+    rs2 = rs^2
   
     # unpolarised
     om = 2.0 * a * (b1 * rs12 + b2 * rs + b3 * rs32 + b4 * rs2)
-    olog = CUDA.log(1.0 + 1.0 / om)
+    olog = log(1.0 + 1.0 / om)
     epwc = -2.0 * a * (1.0 + a1 * rs) * olog
   
     # polarized
     omp = 2.0 * ap * (b1p * rs12 + b2p * rs + b3p * rs32 + b4p * rs2)
-    ologp = CUDA.log(1.0 + 1.0 / omp)
+    ologp = log(1.0 + 1.0 / omp)
     epwcp = -2.0 * ap * (1.0 + a1p * rs) * ologp
   
     # antiferro
     oma = 2.0 * aa * (b1a * rs12 + b2a * rs + b3a * rs32 + b4a * rs2)
-    ologa = CUDA.log(1.0 + 1.0 / oma)
+    ologa = log(1.0 + 1.0 / oma)
     alpha = 2.0 * aa * (1.0 + a1a * rs) * ologa
   
-    fz = ( CUDA.pow( 1.0 + zeta, 4.0/3.0 ) +
-           CUDA.pow( 1.0 - zeta, 4.0/3.0 ) - 2.0 ) /
-           ( CUDA.pow( 2.0, 4.0/3.0 ) - 2.0 )
+    fz = ( (1.0 + zeta)^(4.0/3.0) + (1.0 - zeta)^(4.0/3.0) - 2.0) / (2.0^(4.0/3.0) - 2.0)
   
     ec = epwc + alpha * fz * (1.0 - zeta4) / fz0 + (epwcp - epwc) * fz * zeta4
 
