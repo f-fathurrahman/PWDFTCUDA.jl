@@ -1,0 +1,4 @@
+name = "PWDFTCUDA"
+uuid = "f2219c79-a41e-4b93-8274-7973f04b47ed"
+authors = ["Fadjar Fathurrahman <fadjar.fathurrahman@gmail.com>"]
+version = "0.1.0"
