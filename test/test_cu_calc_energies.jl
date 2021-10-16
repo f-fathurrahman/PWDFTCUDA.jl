@@ -66,7 +66,7 @@ function main()
 
     E_kin_cpu = calc_E_kin( Ham_cpu, psiks_cpu )
 
-    E_Ps_loc_cpu, E_Hartree_cpu, E_xc_cpu = calc_E_local( Ham_cpu )
+    E_Ps_loc_cpu, E_Hartree_cpu, E_xc_cpu = calc_E_local( Ham_cpu, psiks_cpu )
 
     E_Ps_nloc_cpu = calc_E_Ps_nloc( Ham_cpu, psiks_cpu )
 
