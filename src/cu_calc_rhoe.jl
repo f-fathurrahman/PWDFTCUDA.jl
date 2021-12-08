@@ -1,6 +1,6 @@
 import PWDFT: calc_rhoe, calc_rhoe!
 
-function calc_rhoe!( Ham::CuHamiltonian, psiks::CuBlochWavefunc, Rhoe::CuArray{Float64,2}; renormalize=true )
+function calc_rhoe!( Ham::CuHamiltonian, psis::CuBlochWavefunc, Rhoe::CuArray{Float64,2}; renormalize=true )
 
     pw = Ham.pw
     Focc = Ham.electrons.Focc
@@ -13,7 +13,7 @@ function calc_rhoe!( Ham::CuHamiltonian, psiks::CuBlochWavefunc, Rhoe::CuArray{F
     Ngw = pw.gvecw.Ngw
     wk = pw.gvecw.kpoints.wk
     Npoints = prod(Ns)
-    Nstates = size(psiks[1])[2]
+    Nstates = size(psis[1])[2]
 
     psiR = CUDA.zeros(ComplexF64, Npoints, Nstates)
 
@@ -29,7 +29,7 @@ function calc_rhoe!( Ham::CuHamiltonian, psiks::CuBlochWavefunc, Rhoe::CuArray{F
         psiR[:,:] .= 0.0 + im*0.0
         
         idx = pw.gvecw.idx_gw2r[ik]
-        psi = psiks[ikspin]
+        psi = psis[ikspin]
 
         Nblocks = ceil( Int64, Ngw[ik]/Nthreads )
 
@@ -39,10 +39,6 @@ function calc_rhoe!( Ham::CuHamiltonian, psiks::CuBlochWavefunc, Rhoe::CuArray{F
 
         # Transform to real space
         G_to_R!( pw, psiR )
-
-        # orthonormalization in real space
-        #ortho_gram_schmidt!( psiR ) # is this needed or simply scaling ?
-        #psiR[:] = sqrt(Npoints/CellVolume)*psiR[:]
 
         psiR[:,:] .= sqrt(Npoints/CellVolume)*sqrt(Npoints)*psiR[:,:] # by pass orthonormalization, only use scaling
 
@@ -69,11 +65,11 @@ function calc_rhoe!( Ham::CuHamiltonian, psiks::CuBlochWavefunc, Rhoe::CuArray{F
     return
 end
 
-function calc_rhoe( Ham::CuHamiltonian, psiks::CuBlochWavefunc )
+function calc_rhoe( Ham::CuHamiltonian, psis::CuBlochWavefunc )
     Npoints = prod(Ham.pw.Ns)
     Nspin = Ham.electrons.Nspin
     Rhoe = CUDA.zeros(Float64, Npoints, Nspin)
-    calc_rhoe!( Ham, psiks, Rhoe )
+    calc_rhoe!( Ham, psis, Rhoe )
     return Rhoe
 end
 
