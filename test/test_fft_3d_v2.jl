@@ -1,6 +1,8 @@
 using BenchmarkTools
-
-include("PWDFTCUDA.jl")
+using Printf
+using CUDA
+using PWDFT
+using PWDFTCUDA
 
 function main_CPU(; ecutwfc=15.0)
     pw = PWGrid(ecutwfc, gen_lattice_sc(20.0))
@@ -27,13 +29,13 @@ function main_GPU(; ecutwfc=15.0)
     @printf("%8d %8d %8d GPU: ", pw.gvec.Ng, pw.Ns[1], Npoints)
 
     @btime begin
-        #CuArrays.@sync R_to_G( $pw, $Rhoe )
-        CuArrays.@sync R_to_G( $pw.Ns, $Rhoe )
+        #CUDA.@sync R_to_G( $pw, $Rhoe )
+        CUDA.@sync R_to_G( $pw.Ns, $Rhoe )
     end
 end
 
 for ecut in 30.0:5.0:60.0
     println("ecut = ", ecut)
-    main_CPU(ecutwfc=ecut)
+    #main_CPU(ecutwfc=ecut)
     main_GPU(ecutwfc=ecut)
 end
