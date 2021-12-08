@@ -55,8 +55,8 @@ function CuGVectorsW( gvecw::GVectorsW )
 
 end
 
-const CUPLANFW_TYPE = typeof(plan_fft(CuArray(zeros(ComplexF64,(1,1,1)))))
-const CUPLANBW_TYPE = typeof(plan_ifft(CuArray(zeros(ComplexF64,(1,1,1)))))
+const CUPLANFW_TYPE = typeof(plan_fft!(CuArray(zeros(ComplexF64,(1,1,1)))))
+const CUPLANBW_TYPE = typeof(plan_ifft!(CuArray(zeros(ComplexF64,(1,1,1)))))
 
 # CuArray version of PWGrid
 struct CuPWGrid
@@ -111,8 +111,8 @@ function CuPWGrid( ecutwfc::Float64, LatVecs::Array{Float64,2}; kpoints=nothing,
     gvecw_ = PWDFT.init_gvecw( ecutwfc, gvec_, kpoints )
     gvecw = CuGVectorsW( gvecw_ )
 
-    planfw = plan_fft( CUDA.zeros(ComplexF64, Ns) )
-    planbw = plan_ifft( CUDA.zeros(ComplexF64, Ns) )
+    planfw = plan_fft!( CUDA.zeros(ComplexF64, Ns) )
+    planbw = plan_ifft!( CUDA.zeros(ComplexF64, Ns) )
 
     return CuPWGrid( ecutwfc, ecutrho, Ns, LatVecs, RecVecs, CellVolume, gvec, gvecw,
                      planfw, planbw )
