@@ -15,36 +15,26 @@ function calc_rhoe!( Ham::CuHamiltonian, psis::CuBlochWavefunc, Rhoe::CuArray{Fl
     Npoints = prod(Ns)
     Nstates = size(psis[1])[2]
 
-    psiR = CUDA.zeros(ComplexF64, Npoints, Nstates)
+    ctmp = CUDA.zeros(ComplexF64, Npoints)
 
     # dont forget to zero out the Rhoe first
-    Rhoe[:,:] .= 0.0
-
+    fill!(Rhoe, 0.0)
+    NptsPerSqrtVol = Npoints/sqrt(CellVolume)
+    
     Nthreads = 256
-
-    for ispin = 1:Nspin, ik = 1:Nkpt
-
-        ikspin = ik + (ispin - 1)*Nkpt
-
-        psiR[:,:] .= 0.0 + im*0.0
-        
+    for ispin in 1:Nspin, ik in 1:Nkpt
+        i = ik + (ispin - 1)*Nkpt
         idx = pw.gvecw.idx_gw2r[ik]
-        psi = psis[ikspin]
-
         Nblocks = ceil( Int64, Ngw[ik]/Nthreads )
-
         for ist in 1:Nstates
-            @cuda threads=Nthreads blocks=Nblocks kernel_copy_to_fft_grid_gw2r!( ist, idx, psi, psiR )
-        end
-
-        # Transform to real space
-        G_to_R!( pw, psiR )
-
-        psiR[:,:] .= sqrt(Npoints/CellVolume)*sqrt(Npoints)*psiR[:,:] # by pass orthonormalization, only use scaling
-
-        for ist in 1:Nstates
-            w = wk[ik]*Focc[ist,ikspin]
-            Rhoe[:,ispin] .= Rhoe[:,ispin] .+ w*real( conj(psiR[:,ist]) .* psiR[:,ist] )
+            fill!(ctmp, 0.0 + im*0.0)
+            @views psii = psis[i][:,ist]
+            @cuda threads=Nthreads blocks=Nblocks kernel_copy_to_fft_grid_gw2r_1state!( idx, psii, ctmp )
+            # Transform to real space
+            G_to_R!(pw, ctmp)
+            ctmp[:] .= NptsPerSqrtVol*ctmp[:]
+            w = wk[ik]*Focc[ist,i]
+            @views Rhoe[:,ispin] .+= w*real( conj(ctmp) .* ctmp )
         end
     end
 
